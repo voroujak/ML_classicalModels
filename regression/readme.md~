@@ -2,6 +2,7 @@
 
 # Regression
 
+# Project description
 
 This is the implmentation of the linear regression model on a given data. Dataset is plotted, and fitted on linear regression model, with degrees from 1 to 10, and the best degree is found.
 
