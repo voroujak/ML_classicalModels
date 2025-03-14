@@ -1,0 +1,85 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Dec  6 22:57:48 2016
+
+@author: HP ProBook 450G3
+"""
+
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Nov 11 10:54:32 2016
+
+@author: HP ProBook 450G3
+"""
+import numpy as np
+from matplotlib import pyplot as plt
+import matplotlib as mpl
+import sklearn
+from sklearn.cross_validation import train_test_split 
+from numpy import std
+from numpy import mean
+
+from sklearn import neighbors, datasets
+from sklearn import decomposition
+#from sklearn.neighbors import KNeighborsClassifier
+iris = datasets.load_iris()
+Xx=iris.data#[:,:2]
+y=iris.target#[:,:2]
+Xstand=sklearn.preprocessing.scale(Xx)
+#Xstand=(Xx-mean(Xx,axis=0))/std(Xx,axis=0)
+#PCA
+
+pca=decomposition.PCA(n_components=4)
+XxX=pca.fit_transform(Xstand)
+X=[XxX[:,1],XxX[:,2]]
+#X=[X[:,0],X[:,1]]
+#X=pca.transform(X)
+X=np.vstack(X)
+X=X.T
+
+
+X_train, X_test, Y_train, Y_test = train_test_split(X,y,test_size=0.4)
+
+scc=list()
+#KNN
+#n_neighbors=3
+
+for alpha in [0.1,10,100,1000]:
+    
+    def gauss(x):
+        return np.exp(-alpha*np.power(x,2))
+        
+    for weights in [gauss]:
+        for n_neighbors in [3]:
+            #alpha=10
+            neigh=neighbors.KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights)
+            neigh.fit(X_train,Y_train)
+            neigh.score(X_test,Y_test)
+            print(neigh.score(X_test,Y_test))
+            #plot Decision boundary
+            h=.02
+            x_min, x_max = X[:,0].min()-1, X[:,0].max()+1
+            y_min, y_max = X[:,1].min()-1, X[:,1].max()+1
+            xx,yy=np.meshgrid(np.arange(x_min, x_max,h),
+                               np.arange(y_min,y_max,h))
+            Z=neigh.predict(np.c_[xx.ravel(),yy.ravel()])
+            Z=Z.reshape(xx.shape)
+            plt.figure()
+            cmap_light=mpl.colors.ListedColormap(['#FFAAAA','#AAFFAA','#AAAAFF'])
+            plt.pcolormesh(xx,yy,Z,cmap=cmap_light)
+            
+            #plot the datasets
+            cmap_bold = mpl.colors.ListedColormap(['#FF0000', '#00FF00', '#0000FF'])
+            
+            plt.scatter(X[:, 0], X[:, 1], c=y, cmap=cmap_bold)
+            plt.xlim(xx.min(), xx.max())
+            plt.ylim(yy.min(), yy.max())
+            #plt.title("3-Class classification (k = %i, weights = '%s')"
+                           #              % (n_neighbors))
+            scc.append(neigh.score(X_test,Y_test))
+            plt.title("With K="+ str(n_neighbors)+" and with alpha of: "+str(alpha)+ " the obtained score is: "+ str(neigh.score(X_test,Y_test)))
+            plt.show()
+
+
+
+plt.title("KNN Scores with second and third components of PCA")

@@ -1,0 +1,5 @@
+# Classical ML models
+
+This repo contains some of the classical ML models, including PCA, linear regression, SVM, and clustering with K-Means and GMM, over some of classical ML datasets, including iris, and digits. Specific details and the description of each project is given in the readme file of each folder.
+
+author: M. Farid.

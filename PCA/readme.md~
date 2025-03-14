@@ -1,0 +1,6 @@
+# Principal Component Analysis (PCA)
+
+Applying PCA over COIL-100 dataset with 100 visual object categories. Object are classified with Naive Bayes classifier with Gaussian class-conditional distribution. 
+
+
+
